@@ -5,15 +5,24 @@ const jwt = require("jsonwebtoken");
 const authMiddleWare = require("../middlewares/authMiddleware.js");
 
 router.post("/register", async (req, res, next) => {
-    try {
+   
+
+   
+  try {
   // Validation error
     const user = await User.findOne({ email: req.body.email });
     if (user) {
       return res.send({
         success: false,
         message: "User already exists",
-      });
+      }) 
     }
+ if (!email || !password || !name) {
+   res.send({
+     success: false,
+     message: "Missing form fields.",
+   });
+ }
 //User created
     const hashedPassword = await bcryptjs.hash(req.body.password, 10);
     req.body.password = hashedPassword;
@@ -34,6 +43,8 @@ router.post("/register", async (req, res, next) => {
 
 
 router.post("/login", async (req, res) => {
+  
+ 
   try {
   //  We are trying to see if the user exists
 
