@@ -10,11 +10,15 @@ const mongoose = require("mongoose");
 app.use(express.json());
 
 userRoutes = require("./routes/user.routes")
-
+chatsRoutes = require("./routes/chats.route")
+messagesRoute = require("./routes/messages.route")
 
 app.use(cors());
-app.use("/api/users", userRoutes)
 
+
+app.use("/api/users", userRoutes)
+app.use("/api/chats", chatsRoutes)
+app.use("/api/messages", messagesRoute)
 
 
 mongoose
