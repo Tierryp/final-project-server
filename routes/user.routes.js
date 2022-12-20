@@ -5,25 +5,23 @@ const jwt = require("jsonwebtoken");
 const authMiddleWare = require("../middlewares/authMiddleware.js");
 
 router.post("/register", async (req, res, next) => {
-   
-
-   
   try {
-  // Validation error
+    // Validation error
     const user = await User.findOne({ email: req.body.email });
     if (user) {
       return res.send({
         success: false,
         message: "User already exists",
-      }) 
+      });
     }
- if (!email || !password || !name) {
-   res.send({
-     success: false,
-     message: "Missing form fields.",
-   });
- }
-//User created
+    
+    // if (!email || !password || !name) {
+    //   res.send({
+    //     success: false,
+    //     message: "Missing form fields.",
+    //   });
+    // }
+    //User created
     const hashedPassword = await bcryptjs.hash(req.body.password, 10);
     req.body.password = hashedPassword;
     const newUser = new User(req.body);
@@ -38,15 +36,11 @@ router.post("/register", async (req, res, next) => {
       success: false,
     });
   }
-})
-
-
+});
 
 router.post("/login", async (req, res) => {
-  
- 
   try {
-  //  We are trying to see if the user exists
+    //  We are trying to see if the user exists
 
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
@@ -87,7 +81,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-
 router.get("/get-current-user", authMiddleWare, async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.body.userId });
@@ -104,6 +97,22 @@ router.get("/get-current-user", authMiddleWare, async (req, res) => {
   }
 });
 
-
+// USER SEARCH
+router.get("/get-all-users", authMiddleWare, async (req, res) => {
+  try {
+   //Give us all the IDs except the users hence "$ne (not equal)"
+    const allUsers = await User.find({_id: {$ne: req.body.userId}})
+    res.send({
+      success:true,
+      message:"Users found",
+      data: allUsers
+    })
+  } catch (error) {
+    res.send({
+      message: error.message,
+      success: false
+    })
+  }
+});
 
 module.exports = router;
